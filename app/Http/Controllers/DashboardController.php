@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Permission;
+use App\Modules\JenisLahan\Models\JenisLahan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,6 +12,13 @@ class DashboardController extends Controller
     public function index()
     {
         return view('dashboard');
+    }
+
+    public function map_guest()
+    {
+        return view('home', [
+            'jenis_lahan' => JenisLahan::all()
+        ]);
     }
 
     public function changeRole($id_role)
@@ -28,7 +36,7 @@ class DashboardController extends Controller
         // get user's privilege
         $privileges = Permission::getPrivilege($active_role);
         $privileges = $privileges->mapWithKeys(function ($item, $key) {
-                            return [$item['module'] => $item->only(['create', 'read', 'update', 'delete', 'show_menu'])];
+                            return [$item['module'] => $item->only(['create', 'show', 'read', 'update', 'delete', 'show_menu'])];
                         });
 
         // store to session
