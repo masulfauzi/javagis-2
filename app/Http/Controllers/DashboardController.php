@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Permission;
+use App\Modules\BatasAdministrasi\Models\BatasAdministrasi;
 use App\Modules\JenisLahan\Models\JenisLahan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,8 @@ class DashboardController extends Controller
     public function map_guest()
     {
         return view('home', [
-            'jenis_lahan' => JenisLahan::all()
+            'jenis_lahan' => JenisLahan::all(),
+            'batas_administrasi' => BatasAdministrasi::all(),
         ]);
     }
 

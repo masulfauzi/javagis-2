@@ -1,3 +1,6 @@
+<?php
+// dd($batas_administrasi)
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -134,42 +137,7 @@
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
 
-        // Sao Paulo Soybeans Plant
-        var soybeans_sp = new L.LayerGroup();
-        L.marker([-22, -49.80]).addTo(soybeans_sp),
-            L.marker([-23, -49.10]).addTo(soybeans_sp),
-            L.marker([-21, -49.50]).addTo(soybeans_sp);
-
-        // Sao Paulo Corn Plant
-        var corn_sp = new L.LayerGroup();
-        L.marker([-22, -48.10]).addTo(corn_sp),
-            L.marker([-21, -48.60]).addTo(corn_sp);
-
-        // Rio de Janeiro Bean Plant
-        var bean_rj = new L.LayerGroup();
-        L.marker([-22, -42.10]).addTo(bean_rj),
-            L.marker([-23, -42.78]).addTo(bean_rj);
-
-        // Rio de Janeiro Corn Plant
-        var corn_rj = new L.LayerGroup();
-        L.marker([-22, -43.20]).addTo(corn_rj),
-            L.marker([-23, -43.50]).addTo(corn_rj);
-
-        // Rio de Janeiro Rice Plant
-        var rice_rj = new L.LayerGroup();
-        L.marker([-22, -42.90]).addTo(rice_rj),
-            L.marker([-22, -42.67]).addTo(rice_rj),
-            L.marker([-23, -42.67]).addTo(rice_rj);
-
-        // Belo Horizonte Sugar Cane Plant
-        var sugar_bh = new L.LayerGroup();
-        L.marker([-19, -44.90]).addTo(sugar_bh),
-            L.marker([-19, -44.67]).addTo(sugar_bh);
-
-        // Belo Horizonte Corn Plant
-        var corn_bh = new L.LayerGroup();
-        L.marker([-19.45, -45.90]).addTo(corn_bh),
-            L.marker([-19.33, -45.67]).addTo(corn_bh);
+        
 
 
 
@@ -181,34 +149,53 @@
         }).setView([-5, 106], 6);
 
         <?php $no = 1; ?>
-        @foreach($jenis_lahan as $item_jenis_lahan)
+        @foreach ($jenis_lahan as $item_jenis_lahan)
 
-            <?php 
-                $penggunaan_lahan = \App\Modules\PenggunaanLahan\Models\PenggunaanLahan::where('id_jenislahan', $item_jenis_lahan->id)->get();
-                // dd($penggunaan_lahan);
-
+            <?php
+            $penggunaan_lahan = \App\Modules\PenggunaanLahan\Models\PenggunaanLahan::where('id_jenislahan', $item_jenis_lahan->id)->get();
+            // dd($penggunaan_lahan);
             ?>
 
-            @if(count($penggunaan_lahan) > 0)
+            @if (count($penggunaan_lahan) > 0)
 
-                var jenis_lahan_{{ $no }} = {"type":"FeatureCollection", "features":[
-                                                @foreach($penggunaan_lahan as $item_penggunaan_lahan)
-                                                    {!! $item_penggunaan_lahan->koordinat !!},
-                                                @endforeach
-                                            ]}
+                var jenis_lahan_{{ $no }} = {
+                    "type": "FeatureCollection",
+                    "features": [
+                        @foreach ($penggunaan_lahan as $item_penggunaan_lahan)
+                            {!! $item_penggunaan_lahan->koordinat !!},
+                        @endforeach
+                    ]
+                }
 
                 var layer_jenis_{{ $no }} = L.geoJSON(jenis_lahan_{{ $no }}, {
                     style: {
                         color: "{{ $item_jenis_lahan->warna }}",
-                        opacity: "{{ $item_jenis_lahan->opacity/100 }}",
+                        opacity: "{{ $item_jenis_lahan->opacity / 100 }}",
                         fillColor: "{{ $item_jenis_lahan->warna }}",
-                        fillOpacity: "{{ $item_jenis_lahan->opacity/100 }}",
+                        fillOpacity: "{{ $item_jenis_lahan->opacity / 100 }}",
                     }
                 }).bindTooltip("{{ $item_jenis_lahan->jenis_lahan }}").addTo(map);
-
             @endif
 
-            
+
+
+            <?php $no++; ?>
+        @endforeach
+
+
+        <?php $no = 1; ?>
+        @foreach ($batas_administrasi as $item_batas_administrasi)
+
+            var batas_administrasi_{{ $no }} = {!! $item_batas_administrasi->koordinat !!}
+
+            var layer_batas_{{ $no }} = L.geoJSON(batas_administrasi_{{ $no }}, {
+                style: {
+                    color: "{{ $item_batas_administrasi->TingkatWilayah->warna }}",
+                    // opacity: "{{ $item_batas_administrasi->TingkatWilayah->opacity / 100 }}",
+                    // fillColor: "{{ $item_batas_administrasi->TingkatWilayah->warna }}",
+                    fillOpacity: "{{ $item_batas_administrasi->TingkatWilayah->opacity / 100 }}",
+                }
+            }).bindTooltip("{{ $item_batas_administrasi->nama }}").addTo(map);
 
             <?php $no++; ?>
         @endforeach
@@ -232,50 +219,37 @@
             expanded: true,
             layers: {
                 <?php $no = 1; ?>
-            @foreach($jenis_lahan as $item_jenis_lahan)
+                @foreach ($jenis_lahan as $item_jenis_lahan)
 
-            <?php 
-                $penggunaan_lahan = \App\Modules\PenggunaanLahan\Models\PenggunaanLahan::where('id_jenislahan', $item_jenis_lahan->id)->get();
-                // dd($penggunaan_lahan);
+                    <?php
+                    $penggunaan_lahan = \App\Modules\PenggunaanLahan\Models\PenggunaanLahan::where('id_jenislahan', $item_jenis_lahan->id)->get();
+                    // dd($penggunaan_lahan);
+                    ?>
 
-            ?>
+                    @if (count($penggunaan_lahan) > 0)
 
-            @if(count($penggunaan_lahan) > 0)
+                        "{{ $item_jenis_lahan->jenis_lahan }}": layer_jenis_{{ $no }},
+                    @endif
 
-                "{{ $item_jenis_lahan->jenis_lahan }}" : layer_jenis_{{ $no }},
 
-            @endif
-
-                
-            <?php $no++; ?>
-            @endforeach
+                    <?php $no++; ?>
+                @endforeach
             }
         }, {
             groupName: "Batas Administrasi",
             expanded: true,
             layers: {
-                "Bean Plant": bean_rj,
-                "Corn Plant": corn_rj,
-                "Rice Plant": rice_rj
-            }
-        }, {
-            groupName: "Belo Horizonte",
-            layers: {
-                "Sugar Cane Plant": sugar_bh
+                <?php $no = 1; ?>
+                @foreach ($batas_administrasi as $item_batas_administrasi)
+
+                    "{{ $item_batas_administrasi->nama }}" : layer_batas_{{ $no }}
+
+                    <?php $no++; ?>
+                @endforeach
             }
         }];
 
-        // configure StyledLayerControl options for the layer soybeans_sp
-        soybeans_sp.StyledLayerControl = {
-            removable: true,
-            visible: false
-        }
-
-        // configure the visible attribute with true to corn_bh
-        corn_bh.StyledLayerControl = {
-            removable: false,
-            visible: true
-        }
+        
 
         var options = {
             container_width: "300px",
