@@ -23,6 +23,11 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function landing_page()
+    {
+        return view('landing_page');
+    }
+
     public function changeRole($id_role)
     {
         $user = Auth::user();

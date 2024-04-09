@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Route::view('/', 'welcome')->name('frontend.index');
-Route::get('/', [DashboardController::class, 'map_guest'])->name('frontend.index');
+// Route::get('/', [DashboardController::class, 'map_guest'])->name('frontend.index');
+Route::get('/', [DashboardController::class, 'landing_page'])->name('frontend.index');
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
