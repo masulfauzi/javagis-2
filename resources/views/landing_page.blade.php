@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Bootslander Bootstrap Template - Index</title>
+  <title>JAVA GIS - Sistem Informasi Geografis</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -44,7 +44,7 @@
     <div class="container d-flex align-items-center justify-content-between">
 
       <div class="logo">
-        <h1><a href="index.html"><span>Bootslander</span></a></h1>
+        <h1><a href="index.html"><span>JAVA GIS</span></a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
@@ -52,6 +52,7 @@
       <nav id="navbar" class="navbar">
         <ul>
           <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+          <li><a class="nav-link scrollto" href="{{ route('frontend.peta.index') }}" target="_blank">Peta</a></li>
           <li><a class="nav-link scrollto" href="#about">About</a></li>
           <li><a class="nav-link scrollto" href="#features">Features</a></li>
           <li><a class="nav-link scrollto" href="#gallery">Gallery</a></li>
@@ -89,15 +90,15 @@
       <div class="row justify-content-between">
         <div class="col-lg-7 pt-5 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
           <div data-aos="zoom-out">
-            <h1>Build Your Landing Page With <span>Bootstlander</span></h1>
-            <h2>We are team of talented designers making websites with Bootstrap</h2>
+            <h1>Empower Your Spatial Insights with Java GIS: Unlock the Power of Geospatial Data"</h1>
+            <h2>Java GIS offers advanced mapping solutions and spatial analysis tools, allowing you to harness the full potential of geospatial data for informed decision-making and unparalleled insights.</h2>
             <div class="text-center text-lg-start">
-              <a href="#about" class="btn-get-started scrollto">Get Started</a>
+              <a href="{{ route('frontend.peta.index') }}" class="btn-get-started scrollto">Get Started</a>
             </div>
           </div>
         </div>
         <div class="col-lg-4 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
-          <img src="{{ asset('bootslander') }}/assets/img/hero-img.png" class="img-fluid animated" alt="">
+          <img src="{{ asset('bootslander') }}/assets/img/hero-1.png" class="img-fluid animated" alt="">
         </div>
       </div>
     </div>
@@ -131,8 +132,8 @@
           </div>
 
           <div class="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5" data-aos="fade-left">
-            <h3>Enim quis est voluptatibus aliquid consequatur fugiat</h3>
-            <p>Esse voluptas cumque vel exercitationem. Reiciendis est hic accusamus. Non ipsam et sed minima temporibus laudantium. Soluta voluptate sed facere corporis dolores excepturi. Libero laboriosam sint et id nulla tenetur. Suscipit aut voluptate.</p>
+            <h3>Features and Benefit from JAVA GIS</h3>
+            <p>Explore the myriad capabilities of Java GIS that revolutionize how you interact with geographic data. From dynamic mapping to sophisticated spatial analysis, our platform empowers users with unparalleled versatility and precision. Discover the key features and benefits that make Java GIS the ultimate solution for unlocking the potential of geospatial information</p>
 
             <div class="icon-box" data-aos="zoom-in" data-aos-delay="100">
               <div class="icon"><i class="bx bx-fingerprint"></i></div>
