@@ -6,7 +6,7 @@ use App\Helpers\UsesUuid;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Modules\Jenislahan\Models\Jenislahan;
+use App\Modules\JenisLahan\Models\JenisLahan;
 use App\Modules\Desa\Models\Desa;
 
 
@@ -20,7 +20,7 @@ class PenggunaanLahan extends Model
 	protected $fillable   = ['*'];	
 
 	public function jenislahan(){
-		return $this->belongsTo(Jenislahan::class,"id_jenislahan","id");
+		return $this->belongsTo(JenisLahan::class,"id_jenislahan","id");
 	}
 public function desa(){
 		return $this->belongsTo(Desa::class,"id_desa","id");
