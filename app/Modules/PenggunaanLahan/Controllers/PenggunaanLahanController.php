@@ -10,6 +10,7 @@ use App\Modules\JenisLahan\Models\JenisLahan;
 use App\Modules\Desa\Models\Desa;
 
 use App\Http\Controllers\Controller;
+use App\Modules\BatasAdministrasi\Models\BatasAdministrasi;
 use Illuminate\Support\Facades\Auth;
 
 class PenggunaanLahanController extends Controller
@@ -34,6 +35,38 @@ class PenggunaanLahanController extends Controller
 
 		$this->log($request, 'melihat halaman manajemen data '.$this->title);
 		return view('PenggunaanLahan::penggunaanlahan', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function survey(Request $request)
+	{
+		$data['jenis_lahan'] = JenisLahan::all();
+		$data['batas_administrasi'] = BatasAdministrasi::all();
+
+		return view('PenggunaanLahan::survey', $data);
+	}
+
+	public function create_survey(Request $request, $jenis)
+	{
+		$data['jenis_lahan'] = JenisLahan::all()->pluck('jenis_lahan', 'id')->prepend('-PILIH SALAH SATU-', '');;
+		$data['desa'] = Desa::all()->pluck('nama_desa', 'id')->prepend('-PILIH SALAH SATU-', '');;
+		return view('PenggunaanLahan::survey_create_polygon', $data);
+	}
+
+	public function store_survey(Request $request)
+	{
+		$penggunaanlahan = new PenggunaanLahan();
+
+		$penggunaanlahan->id_jenislahan = $request->id_jenis_lahan;
+		$penggunaanlahan->id_desa = $request->id_desa;
+		$penggunaanlahan->nama = $request->nama;
+		$penggunaanlahan->luas = $request->luas;
+		$penggunaanlahan->koordinat = $request->koordinat;
+
+		$penggunaanlahan->created_by = Auth::id();
+        $penggunaanlahan->save();
+
+		return redirect()->back();
+
 	}
 
 	public function create(Request $request)
