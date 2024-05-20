@@ -48,7 +48,7 @@
                                 <th width="15">No</th>
                                 <td>Tingkat Wilayah</td>
 								<td>Nama</td>
-								<td>Koordinat</td>
+								{{-- <td>Koordinat</td> --}}
 								
                                 <th width="20%">Aksi</th>
                             </tr>
@@ -60,7 +60,7 @@
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $item->id_tingkat_wilayah }}</td>
 									<td>{{ $item->nama }}</td>
-									<td>{{ $item->koordinat }}</td>
+									{{-- <td>{{ $item->koordinat }}</td> --}}
 									
                                     <td>
 										{!! button('batasadministrasi.show','', $item->id) !!}
