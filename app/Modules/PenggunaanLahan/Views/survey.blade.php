@@ -117,7 +117,7 @@
                 <div class="modal-body" id="modal-body">
                     ...
                 </div>
-                
+
             </div>
         </div>
 
@@ -127,6 +127,7 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
     </script>
     <script src="{{ asset('assets/js/pages/horizontal-layout.js') }}"></script>
+    {{-- <script src="{{ asset('assets/geojson/jateng.json') }}"></script> --}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" ß
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
@@ -134,6 +135,7 @@
     <script src="{{ asset('assets/plugins/bing/Bing.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
+    <script src="{{ asset('assets/js/leaflet.ajax.min.js') }}"></script>
 
 
     <script>
@@ -188,10 +190,10 @@
             var shape = layer.toGeoJSON()
             var shape_for_db = JSON.stringify(shape);
 
-            if (type === 'polygon') {
-                var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-                // console.log(seeArea);   
-            }
+            // if (type === 'polygon') {
+            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+            //     // console.log(seeArea);   
+            // }
 
             if (type === 'polyline') {
                 var coords = layer.getLatLngs();
@@ -199,6 +201,11 @@
                 for (var i = 0; i < coords.length - 1; i++) {
                     seeArea += coords[i].distanceTo(coords[i + 1]);
                 }
+            } else if (type === 'rectangle') {
+                var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+                // console.log(seeArea);
+            } else if (type === 'polygon') {
+                var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
                 // console.log(seeArea);
             }
 
@@ -220,6 +227,11 @@
                     document.getElementById('koordinat').value = shape_for_db;
                     if (type != 'marker') {
                         document.getElementById('luas').value = seeArea;
+                    }
+                    if (type == 'marker') {
+                        document.getElementById('luas').value = shape.geometry.coordinates[0] + ',' +
+                            shape.geometry.coordinates[1];
+                        // console.log(shape.geometry.coordinates[0]);
                     }
                     $('#exampleModal').modal('show');
                 }
@@ -295,41 +307,91 @@
             }
         }];
 
+        <?php $no = 1; ?>
+        @foreach ($existing as $item_existing)
+
+            var existing_{{ $no }} = new L.GeoJSON.AJAX(
+                "{{ url('assets/geojson/' . $item_existing->koordinat) }}", {style: {
+                    color: "{{ $item_existing->jenislahan->warna }}",
+                    opacity: "{{ $item_existing->jenislahan->opacity / 100 }}",
+                    fillColor: "{{ $item_existing->jenislahan->warna }}",
+                    fillOpacity: "{{ $item_existing->jenislahan->opacity / 100 }}",
+                }});
+            <?php $no++; ?>
+        @endforeach
+
+        // var jateng = new L.GeoJSON.AJAX("http://localhost/javagis-2/public/assets/geojson/jateng.json", style: {
+        //                 color: "{{ $item_jenis_lahan->warna }}",
+        //                 opacity: "{{ $item_jenis_lahan->opacity / 100 }}",
+        //                 fillColor: "{{ $item_jenis_lahan->warna }}",
+        //                 fillOpacity: "{{ $item_jenis_lahan->opacity / 100 }}",
+        //             });
+        // jateng.addTo(map);
+
+        // var jogja = new L.GeoJSON.AJAX("http://localhost/javagis-2/public/assets/geojson/1716270990.txt", myStyle);
+        // jogja.addTo(map);
+
+        var provinsi = L.layerGroup([
+            <?php $no = 1; ?>
+            @foreach ($existing as $item_existing)
+
+                existing_{{ $no }},
+                <?php $no++; ?>
+            @endforeach
+        ]);
+
+
+
+        // var jateng;
+        // $.getJSON("assets/geosjon/jateng.json", function(data) {
+        //     L.geoJson(data).addTo(map);
+        // });
+
 
         var overlays = [{
-            groupName: "Penggunaan Lahan",
-            expanded: true,
-            layers: {
-                <?php $no = 1; ?>
-                @foreach ($jenis_lahan as $item_jenis_lahan)
+                groupName: "Penggunaan Lahan",
+                expanded: true,
+                layers: {
+                    <?php $no = 1; ?>
+                    @foreach ($jenis_lahan as $item_jenis_lahan)
 
-                    <?php
-                    $penggunaan_lahan = \App\Modules\PenggunaanLahan\Models\PenggunaanLahan::where('id_jenislahan', $item_jenis_lahan->id)->get();
-                    // dd($penggunaan_lahan);
-                    ?>
+                        <?php
+                        $penggunaan_lahan = \App\Modules\PenggunaanLahan\Models\PenggunaanLahan::where('id_jenislahan', $item_jenis_lahan->id)->get();
+                        // dd($penggunaan_lahan);
+                        ?>
 
-                    @if (count($penggunaan_lahan) > 0)
+                        @if (count($penggunaan_lahan) > 0)
 
-                        "{{ $item_jenis_lahan->jenis_lahan }}": layer_jenis_{{ $no }},
-                    @endif
+                            "{{ $item_jenis_lahan->jenis_lahan }}": layer_jenis_{{ $no }},
+                        @endif
 
 
-                    <?php $no++; ?>
-                @endforeach
+                        <?php $no++; ?>
+                    @endforeach
+                }
+            },
+            {
+                groupName: "Existing",
+                expanded: true,
+                // checked: true,
+                layers: {
+                    "Data Existing": provinsi
+                }
+            },
+            {
+                groupName: "Batas Administrasi",
+                expanded: true,
+                layers: {
+                    <?php $no = 1; ?>
+                    @foreach ($batas_administrasi as $item_batas_administrasi)
+
+                        "{{ $item_batas_administrasi->nama }}": layer_batas_{{ $no }}
+
+                        <?php $no++; ?>
+                    @endforeach
+                }
             }
-        }, {
-            groupName: "Batas Administrasi",
-            expanded: true,
-            layers: {
-                <?php $no = 1; ?>
-                @foreach ($batas_administrasi as $item_batas_administrasi)
-
-                    "{{ $item_batas_administrasi->nama }}": layer_batas_{{ $no }}
-
-                    <?php $no++; ?>
-                @endforeach
-            }
-        }];
+        ];
 
 
 

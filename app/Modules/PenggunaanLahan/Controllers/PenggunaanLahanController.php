@@ -11,6 +11,7 @@ use App\Modules\Desa\Models\Desa;
 
 use App\Http\Controllers\Controller;
 use App\Modules\BatasAdministrasi\Models\BatasAdministrasi;
+use App\Modules\Existing\Models\Existing;
 use Illuminate\Support\Facades\Auth;
 
 class PenggunaanLahanController extends Controller
@@ -41,15 +42,29 @@ class PenggunaanLahanController extends Controller
 	{
 		$data['jenis_lahan'] = JenisLahan::all();
 		$data['batas_administrasi'] = BatasAdministrasi::all();
+		$data['existing'] = Existing::all();
 
 		return view('PenggunaanLahan::survey', $data);
 	}
 
 	public function create_survey(Request $request, $jenis)
 	{
+		// dd($jenis);
+
 		$data['jenis_lahan'] = JenisLahan::all()->pluck('jenis_lahan', 'id')->prepend('-PILIH SALAH SATU-', '');;
 		$data['desa'] = Desa::all()->pluck('nama_desa', 'id')->prepend('-PILIH SALAH SATU-', '');;
-		return view('PenggunaanLahan::survey_create_polygon', $data);
+
+		if($jenis == "polyline")
+		{
+			return view('PenggunaanLahan::survey_create_line', $data);
+		}
+		else if($jenis == "marker"){
+			return view('PenggunaanLahan::survey_create_marker', $data);
+		}
+		else{
+			return view('PenggunaanLahan::survey_create_polygon', $data);
+		}
+
 	}
 
 	public function store_survey(Request $request)
